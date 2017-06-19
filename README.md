@@ -1,6 +1,6 @@
 # owncloud-docker
 
-docker service create  \
+  docker service create  \
     --name owncloud3  \
     --mount type=volume,source=owncloud01,destination=/var/www/html,volume-driver=rbd  \
     --mount type=volume,source=owncloud02,destination=/etc/apache2,volume-driver=rbd  \
