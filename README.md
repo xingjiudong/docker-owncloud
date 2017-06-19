@@ -1,6 +1,5 @@
 # owncloud-docker
 
-<<<<<<< HEAD
     docker service create  \
       --name NAME  \
       --mount type=volume,source=$VOLUME01,destination=/var/www/html,volume-driver=$VOLUME_DRIVER  \
@@ -15,5 +14,4 @@
       --env SSL_CERTIFICATE_KEY=$SSL_CERTIFICATE_KEY \
       --env SSL_CERTIFICATE_CRT=$SSL_CERTIFICATE_CRT \
       xingjiudong/owncloud
-=======
->>>>>>> aa75c9bc8e51b3356e3e89d72987e8658ab210cc
+
