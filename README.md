@@ -1,4 +1,4 @@
-# owncloud-docker
+# Container Quickstart
 
     docker service create  \
       --name NAME  \
