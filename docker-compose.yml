@@ -1,17 +1,18 @@
 version: '3'
 
 volumes:
-  ownmysql:
+  owndb:
     driver: "${VOLUME_DRIVER}"
-  owncloud1:
+  owncloud_data:
     driver: "${VOLUME_DRIVER}"
-  owncloud2:
+  owncloud_apache2:
     driver: "${VOLUME_DRIVER}"
 networks:
   owncloud-network:
 services:
-  ownmysql:
-    image: mysql
+  owndb:
+    container_name: owndb
+    image: mysql:${MYSQL_VERSION}
     restart: on-failure:10
     logging:
       driver: "journald"
@@ -20,14 +21,15 @@ services:
     networks:
       - owncloud-network
     volumes:
-      - ownmysql:/var/lib/mysql
+      - owndb:/var/lib/mysql
     environment:
-      - MYSQL_ROOT_PASSWORD=password
-      - MYSQL_USER=owncloud
-      - MYSQL_PASSWORD=password
-      - MYSQL_DATABASE=owncloud
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
   owncloud:
-    image: owncloud
+    container_name: owncloud
+    image: owncloud:${OWNCLOUD_VERSION}
     restart: on-failure:10
     logging:
       driver: "journald"
@@ -35,9 +37,9 @@ services:
        - "443:443"
        - "80:80"
     depends_on:
-       - "ownmysql"
+       - "owndb"
     networks:
       - owncloud-network
     volumes:
-      - owncloud1:/var/www/html
-      - owncloud2:/etc/apache2
+      - owncloud_data:/var/www/html
+      - owncloud_apache2:/etc/apache2

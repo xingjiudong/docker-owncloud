@@ -1,3 +1,3 @@
 # Container Quickstart
 
-./initiate
+./initiate up -d
