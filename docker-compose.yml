@@ -22,6 +22,7 @@ services:
     volumes:
       - owndb:/var/lib/mysql
     environment:
+       constraint:volume.driver: =${VOLUME_DRIVER}
        MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
        MYSQL_USER: ${MYSQL_USER}
        MYSQL_PASSWORD: ${MYSQL_PASSWORD}
@@ -41,3 +42,5 @@ services:
     volumes:
       - owncloud_data:/var/www/html
       - owncloud_apache2:/etc/apache2
+    environment:
+       constraint:volume.driver: =${VOLUME_DRIVER}
