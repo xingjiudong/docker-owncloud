@@ -1,16 +1,20 @@
 version: '2.1'
 
 volumes:
-  owndb:
+  ownclouddb:
     driver: "${VOLUME_DRIVER}"
   owncloud_data:
     driver: "${VOLUME_DRIVER}"
   owncloud_apache2:
     driver: "${VOLUME_DRIVER}"
+  owncloud-proxy:
+    driver: "${VOLUME_DRIVER}"
 networks:
   owncloud-network:
+  proxy-network:
+    external: true
 services:
-  owndb:
+  ownclouddb:
     image: mysql:${MYSQL_VERSION}
     restart: on-failure:10
     logging:
@@ -20,7 +24,7 @@ services:
     networks:
       - owncloud-network
     volumes:
-      - owndb:/var/lib/mysql
+      - ownclouddb:/var/lib/mysql
     environment:
        constraint:volume.driver: =${VOLUME_DRIVER}
        MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
@@ -33,10 +37,10 @@ services:
     logging:
       driver: "journald"
     ports:
-       - "443"
-       - "80"
+      - "443"
+      - "80"
     depends_on:
-       - "owndb"
+      - "ownclouddb"
     networks:
       - owncloud-network
     volumes:
@@ -44,3 +48,23 @@ services:
       - owncloud_apache2:/etc/apache2
     environment:
        constraint:volume.driver: =${VOLUME_DRIVER}
+  owncloud-proxy:
+    image: openfrontier/nginx-etcd:${NGINX_VERSION}
+    restart: on-failure:10
+    logging:
+      driver: "journald"
+    ports:
+      - "80"
+      - "443"
+    depends_on:
+      - "ownclouddb"
+      - "owncloud"
+    networks:
+      - owncloud-network
+      - proxy-network
+    volumes:
+      - owncloud-proxy:/etc/nginx
+    environment:
+       constraint:volume.driver: =${VOLUME_DRIVER} 
+       ETCD_CLIENT_IP: ${ETCD_CLIENT_IP}
+       PROJECT_NAME: ${PROJECT_NAME}

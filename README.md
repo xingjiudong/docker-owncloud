@@ -1,3 +1,6 @@
 # Container Quickstart
 
-./initiate up -d
+./initiate.sh up -d
+
+
+
