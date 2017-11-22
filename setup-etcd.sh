@@ -1,5 +1,9 @@
 # owncloud-proxy 
 
+set -e
+source ./.env
+source ./env.config
+
 etcdctl set /nginx-config/${COMPOSE_PROJECT_NAME}/${PROXY_SITE_URL}/client_max_body_size 5120m
 etcdctl set /nginx-config/${COMPOSE_PROJECT_NAME}/${PROXY_SITE_URL}/owncloud/location /
 etcdctl set /nginx-config/${COMPOSE_PROJECT_NAME}/${PROXY_SITE_URL}/owncloud/properties/proxy_pass http://owncloud
