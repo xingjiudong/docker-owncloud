@@ -7,16 +7,14 @@ volumes:
     driver: "${VOLUME_DRIVER}"
   owncloud_apache2:
     driver: "${VOLUME_DRIVER}"
-  owncloud-proxy:
-    driver: "${VOLUME_DRIVER}"
 networks:
   owncloud-network:
-  proxy-network:
+  front_proxy-network:
     external: true
 services:
   ownclouddb:
     image: mysql:${MYSQL_VERSION}
-    restart: on-failure:10
+    restart: unless-stopped 
     logging:
       driver: "journald"
     ports:
@@ -33,7 +31,7 @@ services:
        MYSQL_DATABASE: ${MYSQL_DATABASE}
   owncloud:
     image: owncloud:${OWNCLOUD_VERSION}
-    restart: on-failure:10
+    restart: unless-stopped 
     logging:
       driver: "journald"
     ports:
@@ -50,7 +48,7 @@ services:
        constraint:volume.driver: =${VOLUME_DRIVER}
   owncloud-proxy:
     image: openfrontier/nginx-etcd:${NGINX_VERSION}
-    restart: on-failure:10
+    restart: unless-stopped 
     logging:
       driver: "journald"
     ports:
@@ -61,10 +59,9 @@ services:
       - "owncloud"
     networks:
       - owncloud-network
-      - proxy-network
+      - front_proxy-network
     volumes:
-      - owncloud-proxy:/etc/nginx
+      - /etc/localtime:/etc/localtime:ro
     environment:
-       constraint:volume.driver: =${VOLUME_DRIVER} 
        ETCD_CLIENT_IP: ${ETCD_CLIENT_IP}
        PROJECT_NAME: ${PROJECT_NAME}
