@@ -10,7 +10,6 @@ volumes:
 networks:
   owncloud-network:
   front_proxy-network:
-    external: true
 services:
   ownclouddb:
     image: mysql:${MYSQL_VERSION}
